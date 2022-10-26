@@ -1,0 +1,61 @@
+name: Continuous Integration
+on:
+  push:
+  pull_request:
+jobs:
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: nix-cache
+        with:
+          path: /tmp/nix-cache
+          key: ${{ runner.os }}-nix-${{ hashFiles('./flake.*') }}-node-${{ hashFiles('./package-lock.json') }}
+      - uses: cachix/install-nix-action@v18
+        with:
+          extra_nix_config: |
+            cores = 0
+            experimental-features = nix-command flakes
+            keep-derivations = true
+            keep-outputs = true
+      - run: nix-store --import < /tmp/nix-cache
+        if: "steps.nix-cache.outputs.cache-hit == 'true'"
+      - run: |
+          mv dist/index.js dist/index.old.$GITHUB_RUN_ID.$GITHUB_RUN_NUMBER.js
+          nix develop --command npm run build
+          diff dist/index.old.$GITHUB_RUN_ID.$GITHUB_RUN_NUMBER.js dist/index.js
+      - run: nix-store --export $(find /nix/store -maxdepth 1 -name '*-*') > /tmp/nix-cache
+        if: "steps.nix-cache.outputs.cache-hit != 'true'"
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+      - uses: ./
+      - run: captain --version
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: nix-cache
+        with:
+          path: /tmp/nix-cache
+          key: ${{ runner.os }}-nix-${{ hashFiles('./flake.*') }}-node-${{ hashFiles('./package-lock.json') }}
+      - uses: cachix/install-nix-action@v18
+        with:
+          extra_nix_config: |
+            cores = 0
+            experimental-features = nix-command flakes
+            keep-derivations = true
+            keep-outputs = true
+      - run: nix-store --import < /tmp/nix-cache
+        if: "steps.nix-cache.outputs.cache-hit == 'true'"
+      - run: nix develop --command npx prettier --check "src/**/*.ts"
+      - run: nix develop --command nixfmt --check flake.nix
+      - run: nix-store --export $(find /nix/store -maxdepth 1 -name '*-*') > /tmp/nix-cache
+        if: "steps.nix-cache.outputs.cache-hit != 'true'"
