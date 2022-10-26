@@ -6555,11 +6555,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(2186);
-const path = __nccwpck_require__(1017);
+const http = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
+const path = __nccwpck_require__(1017);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const version = core.getInput('version');
+        let version = core.getInput('version');
+        if (version === 'latest') {
+            core.debug('Fetching list of Captain releases');
+            const client = new http.HttpClient();
+            const versions = yield client.getJson('https://releases.captain.build/versions.json');
+            if (versions.statusCode !== 200 || versions.result === null) {
+                throw 'Unable to fetch list of Captain releases';
+            }
+            version = versions.result.captain.latest;
+        }
         const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`;
         core.debug(`Attempting to fetch ${url}`);
         const captain = yield tc.downloadTool(url);
