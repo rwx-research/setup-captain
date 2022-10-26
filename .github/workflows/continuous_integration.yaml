@@ -37,7 +37,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v3
       - uses: ./
-      - run: captain --version
+      - run: captain --help
 
   lint:
     name: Lint
