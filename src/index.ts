@@ -32,12 +32,11 @@ async function run() {
 
   const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`
 
-  core.debug(`Attempting to fetch ${url}`)
+  core.debug(`Fetching ${url}`)
   const captain = await tc.downloadTool(url)
 
-  core.debug(`Installed Captain to ${path.dirname(captain)}`)
-  await exec.exec('chmod', ['+x', captain])
-  core.addPath(path.dirname(captain))
+  core.debug('Installing to /usr/local/bin/captain')
+  await exec.exec('install', [captain, '/usr/local/bin/captain'])
 }
 
 run().catch(err => core.setFailed(err))

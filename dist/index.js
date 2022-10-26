@@ -6558,7 +6558,6 @@ const core = __nccwpck_require__(2186);
 const exec = __nccwpck_require__(1514);
 const http = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
-const path = __nccwpck_require__(1017);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = core.getInput('version');
@@ -6572,11 +6571,10 @@ function run() {
             version = versions.result.captain.latest;
         }
         const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`;
-        core.debug(`Attempting to fetch ${url}`);
+        core.debug(`Fetching ${url}`);
         const captain = yield tc.downloadTool(url);
-        core.debug(`Installed Captain to ${path.dirname(captain)}`);
-        yield exec.exec('chmod', ['+x', captain]);
-        core.addPath(path.dirname(captain));
+        core.debug('Installing to /usr/local/bin/captain');
+        yield exec.exec('install', [captain, '/usr/local/bin/captain']);
     });
 }
 run().catch(err => core.setFailed(err));
