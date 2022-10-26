@@ -6555,6 +6555,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(2186);
+const exec = __nccwpck_require__(1514);
 const http = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
 const path = __nccwpck_require__(1017);
@@ -6573,6 +6574,8 @@ function run() {
         const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`;
         core.debug(`Attempting to fetch ${url}`);
         const captain = yield tc.downloadTool(url);
+        core.debug(`Installed Captain to ${path.dirname(captain)}`);
+        yield exec.exec('chmod', ['+x', captain]);
         core.addPath(path.dirname(captain));
     });
 }

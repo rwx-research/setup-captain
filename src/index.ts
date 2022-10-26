@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 import * as http from '@actions/http-client'
 import * as tc from '@actions/tool-cache'
 import * as path from 'path'
@@ -34,6 +35,8 @@ async function run() {
   core.debug(`Attempting to fetch ${url}`)
   const captain = await tc.downloadTool(url)
 
+  core.debug(`Installed Captain to ${path.dirname(captain)}`)
+  await exec.exec('chmod', ['+x', captain])
   core.addPath(path.dirname(captain))
 }
 
