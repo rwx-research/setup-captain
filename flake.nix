@@ -8,8 +8,6 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = import nixpkgs { system = system; };
       in {
-        devShell = pkgs.mkShell {
-          packages = with pkgs; [ nixfmt nodejs ];
-        };
+        devShell = pkgs.mkShell { packages = with pkgs; [ nixfmt nodejs ]; };
       });
 }
