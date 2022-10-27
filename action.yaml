@@ -1,0 +1,12 @@
+name: Setup Captain
+description: Installs the Captain CLI
+inputs:
+  version:
+    description: |
+      Version of the Captain CLI to install.
+      Must either be "latest" or a semver identifier.
+    default: latest
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js' 

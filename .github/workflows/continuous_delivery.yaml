@@ -1,0 +1,47 @@
+name: Continuous Delivery
+run-name: Tag new release
+on:
+  workflow_run:
+    workflows:
+      - Continuous Integration
+    branches:
+      - main
+    types:
+      - completed
+jobs:
+  tag-releases:
+    name: Tag releases
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        id: nix-cache
+        with:
+          path: /tmp/nix-cache
+          key: ${{ runner.os }}-nix-${{ hashFiles('./flake.*') }}-golang-${{ hashFiles('./go.*') }}
+      - uses: cachix/install-nix-action@v18
+        with:
+          extra_nix_config: |
+            cores = 0
+            experimental-features = nix-command flakes
+            keep-derivations = true
+            keep-outputs = true
+      - run: nix-store --import < /tmp/nix-cache
+        if: "steps.nix-cache.outputs.cache-hit == 'true'"
+      - run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+          version=$(npm -j list setup-captain | jq -r .version)
+          git tag "$version"
+
+          if [[ $(echo $version | grep -v "-") ]]; then {
+            major=$(echo $version | awk -F '.' '{print $1}')
+            git tag "$major"
+
+            minor=$(echo $version | awk -F '.' '{print $2}')
+            git tag "$major.$minor"
+          fi
+
+          git push --force --tags
