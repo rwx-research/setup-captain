@@ -36,7 +36,7 @@ jobs:
           version=$(npm -j list setup-captain | jq -r .version)
           git tag "$version"
 
-          if [[ $(echo $version | grep -v "-") ]]; then {
+          if [[ $(echo $version | grep -v "-") ]]; then
             major=$(echo $version | awk -F '.' '{print $1}')
             git tag "$major"
 
