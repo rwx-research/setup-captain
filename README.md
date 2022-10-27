@@ -11,7 +11,7 @@ The version of `captain` to install. Defaults to `latest`.
 ## Example usage
 
 ```yaml
-uses: actions/setup-captain@v1
+uses: actions/setup-captain@v0
 with:
   version: v0.1.0
 ```
