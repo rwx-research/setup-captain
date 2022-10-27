@@ -35,6 +35,7 @@ jobs:
 
           version=$(npm -j list setup-captain | jq -r .version)
           git tag "v$version"
+          echo "newReleaseTag=v$version" >> $GITHUB_ENV
 
           if [[ $(echo $version | grep -v "-") ]]; then
             major=$(echo $version | awk -F '.' '{print $1}')
@@ -45,3 +46,11 @@ jobs:
           fi
 
           git push --force --tags
+      - uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.newReleaseTag }}
+          release_name: Release ${{ env.newReleaseTag }}
+          draft: false
+          prerelease: contains(env.newReleaseTag, "-")
