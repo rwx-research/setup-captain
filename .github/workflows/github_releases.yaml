@@ -1,12 +1,11 @@
 on:
-  push:
-    tags:
-      - v**
+  create:
 name: Create Github Release
 jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, "v")
     steps:
       - uses: actions/create-release@v1
         env:
