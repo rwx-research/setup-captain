@@ -7,7 +7,9 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = import nixpkgs { system = system; };
-      in {
-        devShell = pkgs.mkShell { packages = with pkgs; [ jq nixfmt nodejs ]; };
+      in
+      {
+        formatter = pkgs.nixpkgs-fmt;
+        devShell = pkgs.mkShell { packages = with pkgs; [ jq nodejs ]; };
       });
 }
