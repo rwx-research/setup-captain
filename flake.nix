@@ -10,6 +10,6 @@
       in
       {
         formatter = pkgs.nixpkgs-fmt;
-        devShell = pkgs.mkShell { packages = with pkgs; [ jq nixfmt nodejs ]; };
+        devShell = pkgs.mkShell { packages = with pkgs; [ jq nodejs ]; };
       });
 }
