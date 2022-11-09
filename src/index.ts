@@ -30,7 +30,17 @@ async function run() {
     version = versions.result.captain.latest
   }
 
-  const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`
+  let os = process.platform as string
+  if (os === 'win32') {
+    os = 'windows'
+  }
+
+  let arch = process.arch as string
+  if (arch === 'x64') {
+    arch = 'amd64'
+  }
+
+  const url = `https://releases.captain.build/captain-${os}-${arch}-${version}`
 
   core.debug(`Fetching ${url}`)
   const captain = await tc.downloadTool(url)
