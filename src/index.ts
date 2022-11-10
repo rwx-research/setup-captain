@@ -33,7 +33,7 @@ async function run() {
   if (version === 'latest' || version === 'v1') {
     const versions = await fetchVersionLookup()
     if (!versions.has(version)) {
-      throw 'Unknown version ${version}'
+      throw `Unknown version ${version}`
     }
 
     version = versions.get(version) as string
