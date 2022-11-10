@@ -13,21 +13,30 @@ interface Versions {
   versions: string[]
 }
 
+async function fetchVersionLookup(): Promise<Map<string, string>> {
+  core.debug('Fetching list of Captain releases')
+
+  const client = new http.HttpClient()
+  const versions = await client.getJson<ProductVersions>(
+    'https://releases.captain.build/versions.json'
+  )
+
+  if (versions.statusCode !== 200 || versions.result === null) {
+    throw 'Unable to fetch list of Captain releases'
+  }
+
+  return new Map(Object.entries(versions.result.captain))
+}
+
 async function run() {
   let version = core.getInput('version')
-  if (version === 'latest') {
-    core.debug('Fetching list of Captain releases')
-
-    const client = new http.HttpClient()
-    const versions = await client.getJson<ProductVersions>(
-      'https://releases.captain.build/versions.json'
-    )
-
-    if (versions.statusCode !== 200 || versions.result === null) {
-      throw 'Unable to fetch list of Captain releases'
+  if (version === 'latest' || version === 'v1') {
+    const versions = await fetchVersionLookup()
+    if (!versions.has(version)) {
+      throw 'Unknown version ${version}'
     }
 
-    version = versions.result.captain.latest
+    version = versions.get(version) as string
   }
 
   let os = process.platform as string
