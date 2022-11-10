@@ -11,7 +11,7 @@ The version of `captain` to install. Defaults to `latest`.
 ## Example usage
 
 ```yaml
-uses: rwx-research/setup-captain@v0
+uses: rwx-research/setup-captain@v1
 with:
-  version: v0.1.0
+  version: v0.6.1
 ```

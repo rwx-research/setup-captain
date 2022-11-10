@@ -1,6 +1,6 @@
 {
   "name": "setup-captain",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "This action installs the captain CLI in Github Actions",
   "main": "dist/index.js",
   "scripts": {

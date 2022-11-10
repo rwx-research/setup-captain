@@ -5,7 +5,7 @@ jobs:
   check-version:
     name: Ensure version bump
     runs-on: ubuntu-latest
-    if: ${{ github.head_ref != 'main' }}
+    if: ${{ github.base_ref == 'v1' }}
     steps:
       - uses: actions/checkout@v3
       - uses: cachix/install-nix-action@v18
@@ -17,13 +17,23 @@ jobs:
         if: "steps.nix-cache.outputs.cache-hit == 'true'"
       - run: |
           newVersion=$(npm -j list setup-captain | jq -r .version)
-          git fetch && git checkout origin/main
+          majorVersion=$(echo $newVersion | awk -F '.' '{print $1}')
+          git fetch && git checkout origin/v1
           oldVersion=$(npm -j list setup-captain | jq -r .version)
+          latestVersion=$(echo "$newVersion $oldVersion" | sed 's/\ /\n/' | sort -rV | head -n 1)
+
+          if [[ "$majorVersion" != "1" ]]; then
+            echo "Major version needs to be '1' on v1 branch"
+            exit 1
+          fi
+          if [[ $(echo $newVersion | grep "-") ]]; then
+            echo "pre-release versions are not allowed on v1 branch"
+            exit 1
+          fi
           if [[ "$newVersion" == "$oldVersion" ]]; then
             echo "Version number was not changed"
             exit 1
           fi
-          latestVersion=$(echo "$newVersion $oldVersion" | sed 's/\ /\n/' | sort -rV | head -n 1)
           if [[ "$latestVersion" != "$newVersion" ]]; then
             echo "Version number was not increased"
             exit 1
