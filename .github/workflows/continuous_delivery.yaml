@@ -5,7 +5,7 @@ on:
     workflows:
       - Continuous Integration
     branches:
-      - main
+      - v1
     types:
       - completed
 jobs:
@@ -25,18 +25,13 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
           version=$(npm -j list setup-captain | jq -r .version)
+          majorMinor=$(echo $version | awk -F '.' '{print $1 "." $2}')
+
           git tag "v$version"
-          echo "newReleaseTag=v$version" >> $GITHUB_ENV
-
-          if [[ $(echo $version | grep -v "-") ]]; then
-            major=$(echo $version | awk -F '.' '{print $1}')
-            git tag "v$major"
-
-            minor=$(echo $version | awk -F '.' '{print $2}')
-            git tag "v$major.$minor"
-          fi
-
+          git tag "v$majorMinor"
           git push --force --tags
+
+          echo "newReleaseTag=v$version" >> $GITHUB_ENV
       - uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
