@@ -17,7 +17,7 @@ jobs:
         if: "steps.nix-cache.outputs.cache-hit == 'true'"
       - run: |
           newVersion=$(npm -j list setup-captain | jq -r .version)
-          majorVersion=$(echo $version | awk -F '.' '{print $1}')
+          majorVersion=$(echo $newVersion | awk -F '.' '{print $1}')
           git fetch && git checkout origin/v1
           oldVersion=$(npm -j list setup-captain | jq -r .version)
           latestVersion=$(echo "$newVersion $oldVersion" | sed 's/\ /\n/' | sort -rV | head -n 1)
