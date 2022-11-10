@@ -6570,7 +6570,15 @@ function run() {
             }
             version = versions.result.captain.latest;
         }
-        const url = `https://releases.captain.build/captain-${process.platform}-${process.arch}-${version}`;
+        let os = process.platform;
+        if (os === 'win32') {
+            os = 'windows';
+        }
+        let arch = process.arch;
+        if (arch === 'x64') {
+            arch = 'amd64';
+        }
+        const url = `https://releases.captain.build/captain-${os}-${arch}-${version}`;
         core.debug(`Fetching ${url}`);
         const captain = yield tc.downloadTool(url);
         core.debug('Installing to /usr/local/bin/captain');
