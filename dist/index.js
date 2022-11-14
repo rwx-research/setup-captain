@@ -6558,17 +6558,26 @@ const core = __nccwpck_require__(2186);
 const exec = __nccwpck_require__(1514);
 const http = __nccwpck_require__(6255);
 const tc = __nccwpck_require__(7784);
+function fetchVersionLookup() {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.debug('Fetching list of Captain releases');
+        const client = new http.HttpClient();
+        const versions = yield client.getJson('https://releases.captain.build/versions.json');
+        if (versions.statusCode !== 200 || versions.result === null) {
+            throw 'Unable to fetch list of Captain releases';
+        }
+        return new Map(Object.entries(versions.result.captain));
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = core.getInput('version');
-        if (version === 'latest') {
-            core.debug('Fetching list of Captain releases');
-            const client = new http.HttpClient();
-            const versions = yield client.getJson('https://releases.captain.build/versions.json');
-            if (versions.statusCode !== 200 || versions.result === null) {
-                throw 'Unable to fetch list of Captain releases';
+        if (version === 'latest' || version === 'v1') {
+            const versions = yield fetchVersionLookup();
+            if (!versions.has(version)) {
+                throw `Unknown version ${version}`;
             }
-            version = versions.result.captain.latest;
+            version = versions.get(version);
         }
         let os = process.platform;
         if (os === 'win32') {

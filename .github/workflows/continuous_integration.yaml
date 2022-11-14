@@ -18,14 +18,21 @@ jobs:
           nix develop --command npm run build
           diff dist/index.old.$GITHUB_RUN_ID.$GITHUB_RUN_NUMBER.js dist/index.js
 
-  test:
-    name: Test
+  test_default_version:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - uses: ./
-      - run: captain --help
+      - run: captain --version | grep '^v1\.'
+
+  test_specific_version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          version: v0.8.0
+      - run: captain --version | grep '^v0\.8\.0$'
 
   lint:
     name: Lint

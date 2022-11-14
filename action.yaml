@@ -5,7 +5,7 @@ inputs:
     description: |
       Version of the Captain CLI to install.
       Must either be "latest" or a semver identifier.
-    default: latest
+    default: v1
     required: false
 runs:
   using: 'node16'
