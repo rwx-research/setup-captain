@@ -1,12 +1,17 @@
 name: Setup Captain
 description: Installs the Captain CLI
+author: RWX
+branding:
+  icon: navigation
+  color: green
 inputs:
   version:
     description: |
       Version of the Captain CLI to install.
-      Must either be "latest" or a semver identifier.
+      Must either be "v1" or a specific version.
+      If not specified, "v1" is the default which will install the latest 1.x.x release.
     default: v1
     required: false
 runs:
   using: 'node16'
-  main: 'dist/index.js' 
+  main: 'dist/index.js'
