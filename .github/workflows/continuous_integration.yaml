@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./
-      - run: captain --version | grep '^v0\.'
+      - run: captain --version | grep '^v1\.'
 
   test_specific_version:
     runs-on: ubuntu-latest
