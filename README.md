@@ -6,12 +6,8 @@ This is a GitHub action for using setting up `captain` in your job.
 
 ### `version`
 
-The version of `captain` to install. Defaults to `v1`. Possible values are `v1`,
-`latest`, or a semantic version number.
-
-`latest` will look up the latest release across all major versions.
-
-`v1` refers to the latest release with major version 1, i.e. `v1.x.x`.
+The version of `captain` to install. Defaults to `v1` - alternatively, a
+semantic version number can be supplied as well (e.g. `v0.7.1`)
 
 ## Example usage
 
