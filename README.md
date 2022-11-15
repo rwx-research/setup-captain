@@ -1,6 +1,10 @@
 # setup-captain
 
-This is a GitHub action for using setting up `captain` in your job.
+This is a GitHub Action for installing the Captain CLI.
+
+For more information on Captain see https://www.rwx.com/captain
+
+For documentation on using the CLI see https://www.rwx.com/captain/docs
 
 ## Inputs
 
