@@ -2,7 +2,6 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as http from '@actions/http-client'
 import * as tc from '@actions/tool-cache'
-import * as path from 'path'
 
 interface ProductVersions {
   captain: Versions
@@ -56,6 +55,15 @@ async function run() {
 
   core.debug('Installing to /usr/local/bin/captain')
   await exec.exec('install', [captain, '/usr/local/bin/captain'])
+
+  const {stdout} = await exec.getExecOutput('captain', ['--version'], {
+    silent: true
+  })
+  const cliVersion = stdout.replace('\n', '')
+  if (cliVersion !== version) {
+    throw `Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`
+  }
+  core.info(`captain ${cliVersion} is installed`)
 }
 
 run().catch(err => core.setFailed(err))

@@ -6592,6 +6592,14 @@ function run() {
         const captain = yield tc.downloadTool(url);
         core.debug('Installing to /usr/local/bin/captain');
         yield exec.exec('install', [captain, '/usr/local/bin/captain']);
+        const { stdout } = yield exec.getExecOutput('captain', ['--version'], {
+            silent: true
+        });
+        const cliVersion = stdout.replace('\n', '');
+        if (cliVersion !== version) {
+            throw `Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`;
+        }
+        core.info(`captain ${cliVersion} is installed`);
     });
 }
 run().catch(err => core.setFailed(err));
