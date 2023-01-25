@@ -37,6 +37,9 @@ async function run() {
 
     version = versions.get(version) as string
   }
+  if (version.match(/^[0-9]+/)) {
+    version = `v${version}`
+  }
 
   let os = process.platform as string
   if (os === 'win32') {
