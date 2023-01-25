@@ -34,6 +34,15 @@ jobs:
           version: v0.8.0
       - run: captain --version | grep '^v0\.8\.0$'
 
+  test_specific_version_without_v_prefix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          version: 1.0.57
+      - run: captain --version | grep '^v1\.0\.57$'
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

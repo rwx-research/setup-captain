@@ -6579,6 +6579,9 @@ function run() {
             }
             version = versions.get(version);
         }
+        if (version.match(/^[0-9]+/)) {
+            version = `v${version}`;
+        }
         let os = process.platform;
         if (os === 'win32') {
             os = 'windows';
