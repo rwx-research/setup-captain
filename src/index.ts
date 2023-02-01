@@ -8,7 +8,7 @@ interface ProductVersions {
 }
 
 interface Versions {
-  latest: string
+  v1: string
   versions: string[]
 }
 
@@ -29,7 +29,11 @@ async function fetchVersionLookup(): Promise<Map<string, string>> {
 
 async function run() {
   let version = core.getInput('version')
-  if (version === 'latest' || version === 'v1') {
+  if (version === 'latest') {
+    version = 'v1'
+  }
+
+  if (version === 'v1') {
     const versions = await fetchVersionLookup()
     if (!versions.has(version)) {
       throw `Unknown version ${version}`
