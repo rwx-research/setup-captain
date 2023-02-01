@@ -6572,7 +6572,10 @@ function fetchVersionLookup() {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = core.getInput('version');
-        if (version === 'latest' || version === 'v1') {
+        if (version === 'latest') {
+            version = 'v1';
+        }
+        if (version === 'v1') {
             const versions = yield fetchVersionLookup();
             if (!versions.has(version)) {
                 throw `Unknown version ${version}`;
