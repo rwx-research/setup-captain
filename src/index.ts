@@ -3,44 +3,13 @@ import * as exec from '@actions/exec'
 import * as http from '@actions/http-client'
 import * as tc from '@actions/tool-cache'
 
-interface ProductVersions {
-  captain: Versions
-}
-
-interface Versions {
-  v1: string
-  versions: string[]
-}
-
-async function fetchVersionLookup(): Promise<Map<string, string>> {
-  core.debug('Fetching list of Captain releases')
-
-  const client = new http.HttpClient()
-  const versions = await client.getJson<ProductVersions>(
-    'https://releases.captain.build/versions.json'
-  )
-
-  if (versions.statusCode !== 200 || versions.result === null) {
-    throw 'Unable to fetch list of Captain releases'
-  }
-
-  return new Map(Object.entries(versions.result.captain))
-}
-
 async function run() {
   let version = core.getInput('version')
+
   if (version === 'latest') {
     version = 'v1'
   }
 
-  if (version === 'v1') {
-    const versions = await fetchVersionLookup()
-    if (!versions.has(version)) {
-      throw `Unknown version ${version}`
-    }
-
-    version = versions.get(version) as string
-  }
   if (version.match(/^[0-9]+/)) {
     version = `v${version}`
   }
@@ -67,7 +36,7 @@ async function run() {
     silent: true
   })
   const cliVersion = stdout.replace('\n', '')
-  if (cliVersion !== version) {
+  if (cliVersion !== version && version !== 'v1') {
     throw `Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`
   }
   core.info(`captain ${cliVersion} is installed`)
