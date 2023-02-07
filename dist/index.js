@@ -6560,6 +6560,7 @@ const tc = __nccwpck_require__(7784);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         let version = core.getInput('version');
+        let extension = '';
         if (version === 'latest') {
             version = 'v1';
         }
@@ -6569,12 +6570,16 @@ function run() {
         let os = process.platform;
         if (os === 'win32') {
             os = 'windows';
+            extension = '.exe';
         }
         let arch = process.arch;
         if (arch === 'x64') {
-            arch = 'amd64';
+            arch = 'x86_64';
         }
-        const url = `https://releases.captain.build/captain-${os}-${arch}-${version}`;
+        else if (arch === 'arm64') {
+            arch = 'aarch64';
+        }
+        const url = `https://releases.captain.build/${version}/${os}/${arch}/captain${extension}`;
         core.debug(`Fetching ${url}`);
         const captain = yield tc.downloadTool(url);
         core.debug('Installing to /usr/local/bin/captain');
