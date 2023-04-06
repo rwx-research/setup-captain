@@ -27,7 +27,7 @@ async function run() {
     arch = 'aarch64'
   }
 
-  const url = `https://releases.captain.build/${version}/${os}/${arch}/captain${extension}`
+  const url = `https://github.com/rwx-research/captain/releases/download/${version}/captain-${os}-${arch}${extension}`
 
   core.debug(`Fetching ${url}`)
   const captain = await tc.downloadTool(url)

@@ -6579,7 +6579,7 @@ function run() {
         else if (arch === 'arm64') {
             arch = 'aarch64';
         }
-        const url = `https://releases.captain.build/${version}/${os}/${arch}/captain${extension}`;
+        const url = `https://github.com/rwx-research/captain/releases/download/${version}/captain-${os}-${arch}${extension}`;
         core.debug(`Fetching ${url}`);
         const captain = yield tc.downloadTool(url);
         core.debug('Installing to /usr/local/bin/captain');
