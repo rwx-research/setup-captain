@@ -43,6 +43,15 @@ jobs:
           version: 1.0.57
       - run: captain --version | grep '^v1\.0\.57$'
 
+  test_unstable_version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          version: unstable
+      - run: captain --version | grep '^unstable-'
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

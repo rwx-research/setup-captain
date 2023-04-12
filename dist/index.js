@@ -6588,7 +6588,8 @@ function run() {
             silent: true
         });
         const cliVersion = stdout.replace('\n', '');
-        if (cliVersion !== version && version !== 'v1') {
+        const aliasVersions = ['v1', 'unstable'];
+        if (cliVersion !== version && !aliasVersions.includes(version)) {
             throw `Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`;
         }
         core.info(`captain ${cliVersion} is installed`);
