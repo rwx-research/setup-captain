@@ -6562,7 +6562,7 @@ function run() {
         let version = core.getInput('version');
         let extension = '';
         if (version === 'latest') {
-            version = 'v1';
+            version = 'v2';
         }
         if (version.match(/^[0-9]+/)) {
             version = `v${version}`;
@@ -6588,7 +6588,7 @@ function run() {
             silent: true
         });
         const cliVersion = stdout.replace('\n', '');
-        const aliasVersions = ['v1', 'unstable'];
+        const aliasVersions = ['v1', 'v2', 'unstable'];
         if (cliVersion !== version && !aliasVersions.includes(version)) {
             throw `Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`;
         }

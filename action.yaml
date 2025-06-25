@@ -8,9 +8,9 @@ inputs:
   version:
     description: |
       Version of the Captain CLI to install.
-      Must either be "v1" or a specific version.
-      If not specified, "v1" is the default which will install the latest 1.x.x release.
-    default: v1
+      Must either be "v1", "v2", or a specific version.
+      If not specified, "v2" is the default which will install the latest 2.x.x release.
+    default: v2
     required: false
 runs:
   using: 'node20'
