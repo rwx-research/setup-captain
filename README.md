@@ -10,7 +10,7 @@ For documentation on using the CLI see https://www.rwx.com/captain/docs
 
 ### `version`
 
-The version of `captain` to install. Defaults to `v1` - alternatively, a
+The version of `captain` to install. Defaults to `v2` - alternatively, a
 semantic version number can be supplied as well (e.g. `v0.7.1`)
 
 ## Example usage
@@ -24,6 +24,6 @@ uses: rwx-research/setup-captain@v1
 ```yaml
 uses: rwx-research/setup-captain@v1
 with:
-  version: 0.7.1
+  version: v0.7.1
 ```
 
