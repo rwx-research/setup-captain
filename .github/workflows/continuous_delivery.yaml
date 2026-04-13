@@ -15,16 +15,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v18
-        with:
-          extra_nix_config: |
-            keep-derivations = true
-            keep-outputs = true
       - run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-          version=$(npm -j list setup-captain | jq -r .version)
+          version=$(cat version)
           majorMinor=$(echo $version | awk -F '.' '{print $1 "." $2}')
 
           git tag "v$version"

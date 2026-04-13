@@ -2,22 +2,6 @@ name: Continuous Integration
 on:
   push:
 jobs:
-  type-check:
-    name: Type check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v18
-        with:
-          extra_nix_config: |
-            keep-derivations = true
-            keep-outputs = true
-      - run: |
-          mv dist/index.js dist/index.old.$GITHUB_RUN_ID.$GITHUB_RUN_NUMBER.js
-          nix develop --command npm install
-          nix develop --command npm run build
-          diff dist/index.old.$GITHUB_RUN_ID.$GITHUB_RUN_NUMBER.js dist/index.js
-
   test_default_version:
     runs-on: ubuntu-latest
     steps:
@@ -51,17 +35,3 @@ jobs:
         with:
           version: unstable
       - run: captain --version | grep '^unstable-'
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v18
-        with:
-          extra_nix_config: |
-            keep-derivations = true
-            keep-outputs = true
-      - run: nix develop --command npm install
-      - run: nix develop --command npx prettier --check "src/**/*.ts"
-      - run: nix fmt -- --check flake.nix

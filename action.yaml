@@ -13,5 +13,53 @@ inputs:
     default: v2
     required: false
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: composite
+  steps:
+    - name: Install Captain CLI
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        version="$VERSION"
+
+        # Normalize version aliases
+        if [[ "$version" == "latest" ]]; then
+          version="v2"
+        fi
+
+        # Add v prefix if version starts with a number
+        if [[ "$version" =~ ^[0-9]+ ]]; then
+          version="v$version"
+        fi
+
+        # Detect OS
+        os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+        extension=""
+        if [[ "$os" == "mingw"* || "$os" == "msys"* || "$os" == "cygwin"* ]]; then
+          os="windows"
+          extension=".exe"
+        fi
+
+        # Detect architecture
+        arch="$(uname -m)"
+        if [[ "$arch" == "x86_64" ]]; then
+          arch="x86_64"
+        elif [[ "$arch" == "arm64" || "$arch" == "aarch64" ]]; then
+          arch="aarch64"
+        fi
+
+        url="https://releases.captain.build/${version}/${os}/${arch}/captain${extension}"
+
+        echo "Fetching $url"
+        curl -fsSL "$url" -o /tmp/captain${extension}
+
+        echo "Installing to /usr/local/bin/captain"
+        install /tmp/captain${extension} /usr/local/bin/captain
+
+        cli_version="$(captain --version)"
+        alias_versions="v1 v2 unstable"
+        if [[ "$cli_version" != "$version" && ! " $alias_versions " =~ " $version " ]]; then
+          echo "::error::Unexpected version of Captain installed. Expected $version but installed $cli_version"
+          exit 1
+        fi
+        echo "captain $cli_version is installed"
