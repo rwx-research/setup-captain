@@ -8,18 +8,11 @@ jobs:
     if: ${{ github.base_ref == 'v1' }}
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@v18
-        with:
-          extra_nix_config: |
-            keep-derivations = true
-            keep-outputs = true
-      - run: nix-store --import < /tmp/nix-cache
-        if: "steps.nix-cache.outputs.cache-hit == 'true'"
       - run: |
-          newVersion=$(npm -j list setup-captain | jq -r .version)
+          newVersion=$(cat version)
           majorVersion=$(echo $newVersion | awk -F '.' '{print $1}')
           git fetch && git checkout origin/v1
-          oldVersion=$(npm -j list setup-captain | jq -r .version)
+          oldVersion=$(cat version || echo "1.3.0")
           latestVersion=$(echo "$newVersion $oldVersion" | sed 's/\ /\n/' | sort -rV | head -n 1)
 
           if [[ "$majorVersion" != "1" ]]; then
